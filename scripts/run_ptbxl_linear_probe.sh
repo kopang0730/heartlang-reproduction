@@ -129,16 +129,34 @@ download_ptbxl() {
 download_checkpoints() {
   if [[ "$DOWNLOAD_CHECKPOINTS" != "1" ]]; then
     echo "Skipping checkpoint download because DOWNLOAD_CHECKPOINTS=$DOWNLOAD_CHECKPOINTS"
+    ensure_official_checkpoint_layout
     return
   fi
 
-  if [[ -f "$HEARTLANG_DIR/checkpoints/pretrain/MIMIC-IV/checkpoint-200.pth" ]]; then
+  if [[ -f "$HEARTLANG_DIR/checkpoints/heartlang_base/checkpoint-200.pth" ]]; then
     echo "HeartLang checkpoint already exists."
     return
   fi
 
   python -m pip install -U huggingface_hub
   huggingface-cli download PKUDigitalHealth/HeartLang --local-dir "$HEARTLANG_DIR"
+  ensure_official_checkpoint_layout
+}
+
+ensure_official_checkpoint_layout() {
+  local hf_checkpoint="$HEARTLANG_DIR/checkpoints/pretrain/MIMIC-IV/checkpoint-200.pth"
+  local official_checkpoint_dir="$HEARTLANG_DIR/checkpoints/heartlang_base"
+  local official_checkpoint="$official_checkpoint_dir/checkpoint-200.pth"
+
+  if [[ -f "$official_checkpoint" ]]; then
+    return
+  fi
+
+  if [[ -f "$hf_checkpoint" ]]; then
+    mkdir -p "$official_checkpoint_dir"
+    ln -sf ../pretrain/MIMIC-IV/checkpoint-200.pth "$official_checkpoint"
+    return
+  fi
 }
 
 patch_ptbxl_path() {
@@ -196,7 +214,7 @@ run_training_and_eval() {
   local nb_classes
   nb_classes="$(nb_classes_for_task "$TASK")"
 
-  local finetune_ckpt="$HEARTLANG_DIR/checkpoints/pretrain/MIMIC-IV/checkpoint-200.pth"
+  local finetune_ckpt="$HEARTLANG_DIR/checkpoints/heartlang_base/checkpoint-200.pth"
   if [[ ! -f "$finetune_ckpt" ]]; then
     echo "Missing checkpoint: $finetune_ckpt" >&2
     echo "Keep DOWNLOAD_CHECKPOINTS=1 or set up the checkpoint before running." >&2

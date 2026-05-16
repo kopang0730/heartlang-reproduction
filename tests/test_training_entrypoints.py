@@ -15,6 +15,7 @@ def test_gpu_training_script_exists_and_has_required_steps():
         "run_class_finetuning.py",
         'TRAINABLE="${TRAINABLE:-linear}"',
         "--trainable",
+        "checkpoints/heartlang_base/checkpoint-200.pth",
         "checkpoints/pretrain/MIMIC-IV/checkpoint-200.pth",
     ]
 
