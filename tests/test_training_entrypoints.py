@@ -29,3 +29,20 @@ def test_notebook_runs_training_script_instead_of_inlining_pipeline():
 
     assert "scripts/run_ptbxl_linear_probe.sh" in text
     assert "bash" in text
+
+
+def test_result_packaging_entrypoints_exist():
+    package_script = ROOT / "scripts" / "package_results.sh"
+    visualizer = ROOT / "scripts" / "visualize_ptbxl_results.py"
+
+    package_text = package_script.read_text()
+    visualizer_text = visualizer.read_text()
+
+    assert "external/HeartLang" in package_text
+    assert "results/pred" in package_text
+    assert "visualize_ptbxl_results.py" in package_text
+    assert "tar -czf" in package_text
+
+    assert "roc_auc_score" in visualizer_text
+    assert "average_precision_score" in visualizer_text
+    assert "PTBXL_QRS_superdiagnostic" in visualizer_text

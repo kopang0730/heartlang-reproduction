@@ -151,3 +151,48 @@ The upstream HeartLang checkout and experiment outputs are under:
 
 external/HeartLang/checkpoints/finetune/ptbxl/
 external/HeartLang/log/
+
+
+14. Package results before shutting down AutoDL
+-----------------------------------------------
+
+Run this after training/evaluation finishes. It collects:
+- results/finetune_results.csv
+- results/pred/*_outputs.csv
+- results/pred/*_targets.csv
+- training/evaluation logs
+- generated figures
+
+Large model checkpoint files are excluded from the archive.
+
+cd /root/autodl-tmp/heartlang-reproduction
+bash scripts/package_results.sh
+
+The archive will be created under:
+
+/root/autodl-tmp/heartlang-reproduction/exports/
+
+
+15. Download the result archive to your Mac
+-------------------------------------------
+
+Option A: use AutoDL JupyterLab file browser.
+
+Open JupyterLab, go to:
+
+/root/autodl-tmp/heartlang-reproduction/exports/
+
+Then download the .tar.gz file.
+
+Option B: use scp from your Mac terminal.
+
+Replace <AutoDL_HOST> and <AutoDL_SSH_PORT> with the SSH address and port shown by AutoDL:
+
+scp -P <AutoDL_SSH_PORT> root@<AutoDL_HOST>:/root/autodl-tmp/heartlang-reproduction/exports/heartlang_results_*.tar.gz ~/Downloads/
+
+
+16. Unpack results on your Mac
+------------------------------
+
+cd ~/Downloads
+tar -xzf heartlang_results_*.tar.gz

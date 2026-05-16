@@ -95,6 +95,22 @@ notebooks/run_ptbxl_linear_probe.ipynb
 
 The notebook calls `scripts/run_ptbxl_linear_probe.sh` instead of duplicating the pipeline. That keeps the command-line and notebook workflows consistent.
 
+## Saving Results
+
+Before shutting down the AutoDL instance, package the evaluation results and figures:
+
+```bash
+bash scripts/package_results.sh
+```
+
+This creates a timestamped `.tar.gz` under `exports/`. The archive includes evaluation CSVs, prediction probabilities, target labels, logs, and generated figures. Large checkpoint files are excluded.
+
+Download it from AutoDL JupyterLab's file browser, or from your Mac:
+
+```bash
+scp -P <AutoDL_SSH_PORT> root@<AutoDL_HOST>:/root/autodl-tmp/heartlang-reproduction/exports/heartlang_results_*.tar.gz ~/Downloads/
+```
+
 ## Remote
 
 GitHub repository:
