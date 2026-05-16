@@ -1,6 +1,38 @@
 HeartLang reproduction lazy command pack
 ========================================
 
+AutoDL quick start
+------------------
+
+Recommended AutoDL instance:
+- GPU: RTX 4090 24GB
+- Image: PyTorch 2.x + CUDA 11.8 or CUDA 12.x
+- Data disk: 100GB recommended. 50GB may work for PTB-XL only, but preprocessing and outputs can get tight.
+
+Use /root/autodl-tmp for this project on AutoDL:
+
+cd /root/autodl-tmp
+
+If GitHub CLI exists:
+
+gh auth login
+git clone https://github.com/kopang0730/heartlang-reproduction.git
+
+If gh is not installed, use a GitHub Personal Access Token:
+
+read -s GITHUB_TOKEN
+git clone https://x-access-token:${GITHUB_TOKEN}@github.com/kopang0730/heartlang-reproduction.git
+unset GITHUB_TOKEN
+
+Then:
+
+cd /root/autodl-tmp/heartlang-reproduction
+conda create -n heartlang python=3.9 -y
+conda activate heartlang
+tmux new -s heartlang
+bash scripts/run_ptbxl_linear_probe.sh
+
+
 0. Login to GitHub on the 4090 machine
 --------------------------------------
 

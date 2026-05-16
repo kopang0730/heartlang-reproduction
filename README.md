@@ -24,14 +24,17 @@ Do not commit raw ECG data, checkpoints, logs, or intermediate experiment output
 
 ## 4090 Training Workflow
 
-On the rented GPU machine:
+On AutoDL, work under the data disk so downloaded ECG data and checkpoints do not fill the system disk:
 
 ```bash
+cd /root/autodl-tmp
 git clone https://github.com/kopang0730/heartlang-reproduction.git
 cd heartlang-reproduction
 ```
 
-Create a Python environment:
+For a private GitHub repository, run `gh auth login` first. If AutoDL does not have `gh`, use a GitHub Personal Access Token as shown in `COMMANDS.txt`.
+
+Create the environment:
 
 ```bash
 conda create -n heartlang python=3.9 -y
