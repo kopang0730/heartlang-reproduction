@@ -38,27 +38,33 @@ conda create -n heartlang python=3.9 -y
 conda activate heartlang
 ```
 
-Then clone the upstream implementation inside a third-party source directory:
+Then run the training launcher:
 
 ```bash
-mkdir -p external
-git clone https://github.com/PKUDigitalHealth/HeartLang.git external/HeartLang
-cd external/HeartLang
-pip install -r requirements.txt
+bash scripts/run_ptbxl_linear_probe.sh
 ```
 
-Download PTB-XL on the GPU machine rather than on the Mac:
+The script will clone the upstream HeartLang implementation, install dependencies, download PTB-XL, download the official checkpoint, preprocess PTB-XL, run linear probing, and run evaluation.
+
+Useful overrides:
 
 ```bash
-mkdir -p ../../data/ptb-xl
-wget -r -N -c -np -P ../../data/ptb-xl https://physionet.org/files/ptb-xl/1.0.3/
+TASK=form SPLIT_RATIOS="0.01 0.1 1" bash scripts/run_ptbxl_linear_probe.sh
+TASK=rhythm EPOCHS=50 RUN_PREPROCESS=0 bash scripts/run_ptbxl_linear_probe.sh
+TRAINABLE=all TASK=superdiagnostic bash scripts/run_ptbxl_linear_probe.sh
 ```
 
-Download official HeartLang checkpoints from Hugging Face on the GPU machine:
+Supported PTB-XL tasks:
+
+- `superdiagnostic`
+- `subdiagnostic`
+- `form`
+- `rhythm`
+
+After the first successful preprocessing run, set these flags to reuse local data and checkpoints:
 
 ```bash
-pip install -U huggingface_hub
-huggingface-cli download PKUDigitalHealth/HeartLang --local-dir checkpoints
+RUN_PREPROCESS=0 DOWNLOAD_PTBXL=0 DOWNLOAD_CHECKPOINTS=0 bash scripts/run_ptbxl_linear_probe.sh
 ```
 
 Run jobs inside `tmux` so training survives SSH disconnects:
@@ -69,6 +75,22 @@ nvidia-smi
 ```
 
 The first target experiment should be PTB-XL linear probing with the official pre-trained checkpoint. After it runs successfully, add full fine-tuning, random initialization, and a ResNet1D baseline.
+
+## Jupyter
+
+You can launch training from Jupyter on the 4090 machine with:
+
+```bash
+jupyter lab
+```
+
+Open:
+
+```text
+notebooks/run_ptbxl_linear_probe.ipynb
+```
+
+The notebook calls `scripts/run_ptbxl_linear_probe.sh` instead of duplicating the pipeline. That keeps the command-line and notebook workflows consistent.
 
 ## Remote
 
