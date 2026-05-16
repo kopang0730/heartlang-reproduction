@@ -1,0 +1,121 @@
+HeartLang reproduction lazy command pack
+========================================
+
+0. Login to GitHub on the 4090 machine
+--------------------------------------
+
+The repository is private, so log in before cloning.
+
+gh auth login
+
+
+1. Clone this reproduction repo
+-------------------------------
+
+git clone https://github.com/kopang0730/heartlang-reproduction.git
+cd heartlang-reproduction
+
+
+2. Create the conda environment
+-------------------------------
+
+conda create -n heartlang python=3.9 -y
+conda activate heartlang
+
+
+3. Start tmux before training
+-----------------------------
+
+tmux new -s heartlang
+nvidia-smi
+
+
+4. One-command first run
+------------------------
+
+This runs the default experiment:
+- PTB-XL superdiagnostic
+- official HeartLang checkpoint
+- linear probing
+- full-label split_ratio=1
+- train + eval
+
+bash scripts/run_ptbxl_linear_probe.sh
+
+
+5. Re-run after data and checkpoints already exist
+--------------------------------------------------
+
+Use this after the first successful run to avoid downloading and preprocessing again.
+
+RUN_PREPROCESS=0 DOWNLOAD_PTBXL=0 DOWNLOAD_CHECKPOINTS=0 bash scripts/run_ptbxl_linear_probe.sh
+
+
+6. Run few-label experiments
+----------------------------
+
+RUN_PREPROCESS=0 DOWNLOAD_PTBXL=0 DOWNLOAD_CHECKPOINTS=0 SPLIT_RATIOS="0.01 0.1 1" bash scripts/run_ptbxl_linear_probe.sh
+
+
+7. Switch PTB-XL task
+---------------------
+
+TASK=form RUN_PREPROCESS=0 DOWNLOAD_PTBXL=0 DOWNLOAD_CHECKPOINTS=0 bash scripts/run_ptbxl_linear_probe.sh
+
+TASK=rhythm RUN_PREPROCESS=0 DOWNLOAD_PTBXL=0 DOWNLOAD_CHECKPOINTS=0 bash scripts/run_ptbxl_linear_probe.sh
+
+TASK=subdiagnostic RUN_PREPROCESS=0 DOWNLOAD_PTBXL=0 DOWNLOAD_CHECKPOINTS=0 bash scripts/run_ptbxl_linear_probe.sh
+
+
+8. Full fine-tuning instead of linear probing
+---------------------------------------------
+
+TRAINABLE=all RUN_PREPROCESS=0 DOWNLOAD_PTBXL=0 DOWNLOAD_CHECKPOINTS=0 bash scripts/run_ptbxl_linear_probe.sh
+
+
+9. Short smoke test
+-------------------
+
+Use this only to check whether the whole pipeline can start.
+
+EPOCHS=1 SPLIT_RATIOS=1 bash scripts/run_ptbxl_linear_probe.sh
+
+
+10. Jupyter option
+------------------
+
+If you want to launch from a notebook:
+
+pip install jupyterlab
+jupyter lab --ip 0.0.0.0 --port 8888 --no-browser
+
+Then open:
+
+notebooks/run_ptbxl_linear_probe.ipynb
+
+
+11. Detach and resume tmux
+--------------------------
+
+Detach:
+
+Ctrl-b d
+
+Resume:
+
+tmux attach -t heartlang
+
+
+12. Pull latest scripts from GitHub
+-----------------------------------
+
+git pull
+
+
+13. Check outputs
+-----------------
+
+The upstream HeartLang checkout and experiment outputs are under:
+
+external/HeartLang/checkpoints/finetune/ptbxl/
+external/HeartLang/log/
