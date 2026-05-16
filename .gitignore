@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Experiment outputs
+data/
+datasets/
+checkpoints/
+outputs/
+results/
+logs/
+log/
+runs/
+wandb/
+mlruns/
+
+# ECG/raw data and model artifacts
+*.dat
+*.hea
+*.npy
+*.npz
+*.pkl
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.h5
+*.csv.gz
+*.tar
+*.tar.gz
+*.zip
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
